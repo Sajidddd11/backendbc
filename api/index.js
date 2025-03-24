@@ -9,6 +9,16 @@ const userRoutes = require('../src/routes/users');
 const errorHandler = require('../src/middleware/errorHandler');
 const { specs, swaggerUi } = require('../src/utils/swagger');
 
+// Debug log for Vercel environment
+if (process.env.NODE_ENV === 'production') {
+  console.log('Running in production mode');
+  console.log('Current directory:', __dirname);
+  console.log('Routes directory:', path.resolve(__dirname, '../src/routes'));
+  // Log if route files exist
+  const authPath = path.resolve(__dirname, '../src/routes/auth.js');
+  console.log('Auth route file exists:', fs.existsSync(authPath));
+}
+
 const app = express();
 
 // Middleware
@@ -17,6 +27,23 @@ app.use(express.json());
 
 // Serve Swagger JSON
 app.get('/swagger.json', (req, res) => {
+  // Include debug info in the response if no paths were found
+  if (!specs.paths || Object.keys(specs.paths).length === 0) {
+    console.log('No API paths found in Swagger spec');
+    return res.status(200).json({
+      ...specs,
+      debug: {
+        message: 'No API paths found in Swagger spec',
+        currentDir: __dirname,
+        routesDir: path.resolve(__dirname, '../src/routes'),
+        filesExist: {
+          auth: fs.existsSync(path.resolve(__dirname, '../src/routes/auth.js')),
+          todos: fs.existsSync(path.resolve(__dirname, '../src/routes/todos.js')),
+          users: fs.existsSync(path.resolve(__dirname, '../src/routes/users.js'))
+        }
+      }
+    });
+  }
   res.setHeader('Content-Type', 'application/json');
   res.send(specs);
 });

@@ -16,7 +16,7 @@ const options = {
     },
     servers: [
       {
-        url: process.env.NODE_ENV === 'production' ? 'https://your-production-url.vercel.app' : 'http://localhost:3000',
+        url: process.env.NODE_ENV === 'production' ? 'https://backendbc.vercel.app' : 'http://localhost:3000',
         description: process.env.NODE_ENV === 'production' ? 'Production Server' : 'Development Server'
       }
     ],

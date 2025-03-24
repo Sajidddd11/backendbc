@@ -13,8 +13,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Swagger API Documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, { explorer: true }));
+// Swagger API Documentation - make sure this comes before other routes
+app.use('/api-docs', swaggerUi.serve);
+app.get('/api-docs', swaggerUi.setup(specs, { explorer: true }));
 
 // Routes
 app.use('/api/auth', authRoutes);

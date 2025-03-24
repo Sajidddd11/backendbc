@@ -16,8 +16,12 @@ const options = {
     },
     servers: [
       {
-        url: process.env.NODE_ENV === 'production' ? 'https://backendbc.vercel.app' : 'http://localhost:3000',
-        description: process.env.NODE_ENV === 'production' ? 'Production Server' : 'Development Server'
+        url: 'https://backendbc.vercel.app',
+        description: 'Production Server'
+      },
+      {
+        url: 'http://localhost:3000',
+        description: 'Development Server'
       }
     ],
     components: {
@@ -35,7 +39,7 @@ const options = {
       }
     ]
   },
-  apis: ['./src/routes/*.js'], // Path to the API routes files
+  apis: ['./src/routes/*.js'],
 };
 
 const specs = swaggerJsdoc(options);

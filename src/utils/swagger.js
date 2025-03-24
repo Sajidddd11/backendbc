@@ -1,5 +1,11 @@
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const path = require('path');
+
+// Determine API paths based on environment
+const apiPaths = process.env.NODE_ENV === 'production' 
+  ? ['../routes/*.js'] 
+  : ['./src/routes/*.js'];
 
 // Swagger configuration
 const options = {
@@ -39,7 +45,7 @@ const options = {
       }
     ]
   },
-  apis: ['./src/routes/*.js'],
+  apis: apiPaths,
 };
 
 const specs = swaggerJsdoc(options);

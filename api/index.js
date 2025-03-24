@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
+const fs = require('fs');
 const authRoutes = require('../src/routes/auth');
 const todoRoutes = require('../src/routes/todos');
 const userRoutes = require('../src/routes/users');
@@ -13,9 +15,25 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Swagger API Documentation - make sure this comes before other routes
+// Serve Swagger JSON
+app.get('/swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(specs);
+});
+
+// Serve Swagger UI
+app.get('/api-docs', (req, res) => {
+  const htmlPath = path.join(__dirname, 'swagger.html');
+  if (fs.existsSync(htmlPath)) {
+    res.sendFile(htmlPath);
+  } else {
+    // Fallback to using swagger-ui-express
+    res.send(swaggerUi.generateHTML(specs, { explorer: true }));
+  }
+});
+
+// The original swagger-ui setup as fallback
 app.use('/api-docs', swaggerUi.serve);
-app.get('/api-docs', swaggerUi.setup(specs, { explorer: true }));
 
 // Routes
 app.use('/api/auth', authRoutes);
